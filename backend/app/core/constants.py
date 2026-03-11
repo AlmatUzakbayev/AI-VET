@@ -1,0 +1,58 @@
+from pathlib import Path
+
+RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+TOP_K_RERANK = 3
+
+CHUNK_SIZE = 512
+CHUNK_OVERLAP = 64
+
+EMBEDDINGS_MODEL = "intfloat/multilingual-e5-large"
+
+# Политика загрузки файлов
+ALLOWED_EXTENSIONS = {'.pdf', '.docx', '.txt'}
+MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
+
+TEXT_PROMPT = (
+    "Ты дружелюбный и опытный ветеринар или зоотехник (зависит от роли пользователя), "
+    "который говорит как живой человек — просто, с теплотой и лёгким юмором, когда уместно. "
+    "Твоя цель — помочь пользователю, но сначала собрать достаточно информации о проблеме. "
+    "Не делай поспешных выводов: задавай уточняющие вопросы (1-2 за раз), чтобы понять ситуацию — "
+    "например, 'А давно это началось?' или 'Что животное ело?' "
+    "Если пользователь отвечает 'не знаю', 'непонятно' или что-то в этом духе, "
+    "переходи к более простым и конкретным вопросам, вроде 'Оно ест нормально?' вместо сложных. "
+    "Не утомляй длинными сообщениями — будь кратким и понятным. "
+    "Когда информации хватит, дай чёткий и практичный совет. "
+    "Если данных мало, предложи базовые шаги или спроси что-то ещё."
+)
+
+CREATE_USER_ENDPOINT = "/api/v1/ai-vet/create_user"
+SET_USER_ROLE_ENDPOINT = "/api/v1/ai-vet/set_user_role"
+SET_USER_ANIMAL_ENDPOINT = "/api/v1/ai-vet/set_user_animal"
+ASK_ENDPOINT = "/api/v1/ai-vet/ask"
+
+CONVERSATIONS_DIRECTORY = Path(__file__).parent.parent.parent.parent / "database" / "saved_conversations"
+USER_STATUSES_DIRECTORY = Path(__file__).parent.parent.parent.parent / "database" / "saved_user_statuses"
+UPLOADS_DIRECTORY = Path(__file__).parent.parent / "uploads"
+
+ROLE_BUTTONS = [
+    "Ветеринар (здоровье и болезни)",
+    "Зоотехник (разведение, кормление, содержание и т.д.)",
+]
+
+ANIMAL_OPTIONS = [
+    "Крупный рогатый скот (коровы, быки, буйволы, яки и пр.)",
+    "Мелкий рогатый скот (козы, овцы и пр.)",
+    "Свиньи",
+    "Птица (куры, гуси, утки и пр.)",
+    "Пушные",
+    "Другое",
+]
+
+START_MESSAGE = (
+    "Добрый день!\n\n"
+    "Сейчас я задам несколько вводных вопросов, чтобы лучше помочь вам.\n\n"
+    "Давайте сначала определимся, какого специалиста подключим.\n\n"
+    "Вам нужна помощь:"
+)
+ANIMAL_OPTIONS_TEXT = "По каким животным вам нужна помощь?"
+DIALOGUE_START = "Опишите проблему, с чем вам помочь?"

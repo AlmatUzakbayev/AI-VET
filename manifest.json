@@ -1,0 +1,36 @@
+{
+  "name": "veterinary-assistant",
+  "version": "1.0.0",
+  "description": "AI-ветеринарный ассистент с RAG pipeline",
+  "stack": ["Python", "FastAPI", "aiogram", "LangChain", "Qdrant", "PostgreSQL"],
+  "entrypoints": {
+    "backend": "backend/app/app.py",
+    "bot": "bot/tg_app.py"
+  },
+  "modules": [
+    {"path": "backend/app/api/chat.py",             "role": "RAG endpoints — вопрос/ответ"},
+    {"path": "backend/app/api/documents.py",         "role": "CRUD медицинских документов"},
+    {"path": "backend/app/api/users.py",             "role": "Управление профилями"},
+    {"path": "backend/app/core/config.py",           "role": "Конфигурация, env-переменные"},
+    {"path": "backend/app/core/constants.py",        "role": "Константы, промпты, тексты бота"},
+    {"path": "backend/app/data/data.py",             "role": "Pydantic схемы (UserInput, AppState)"},
+    {"path": "backend/app/database/database.py",     "role": "HistoryWriter — хранение диалогов JSON"},
+    {"path": "backend/app/models/document_model.py", "role": "Модель документа"},
+    {"path": "backend/app/models/chat_model.py",     "role": "Модель чата/сессии"},
+    {"path": "backend/app/models/user_model.py",     "role": "Модель пользователя"},
+    {"path": "backend/app/services/parser.py",       "role": "Парсинг PDF/DOCX"},
+    {"path": "backend/app/services/chunker.py",      "role": "Чанкинг медицинских текстов"},
+    {"path": "backend/app/services/embeddings.py",   "role": "Векторизация текстов"},
+    {"path": "backend/app/services/reranker.py",     "role": "Переранжирование результатов"},
+    {"path": "backend/app/services/vector_store.py", "role": "Qdrant: upsert / search / delete"},
+    {"path": "backend/app/services/rag.py",          "role": "Полный RAG pipeline"},
+    {"path": "backend/app/services/summarizer.py",   "role": "Суммаризация диагнозов"},
+    {"path": "backend/app/services/vet_knowledge.py","role": "База знаний ветеринарии"},
+    {"path": "bot/handler/commands.py",              "role": "Команды /start /help /upload"},
+    {"path": "bot/handler/chat.py",                  "role": "Диалог, роль, животное, вопросы"},
+    {"path": "bot/handler/documents.py",             "role": "Загрузка документов через бота"},
+    {"path": "bot/keyboards.py",                     "role": "Клавиатуры бота"},
+    {"path": "bot/tg_app.py",                        "role": "Запуск polling + HTTP-клиент к backend"}
+  ]
+}
+

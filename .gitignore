@@ -1,0 +1,14 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.idea/
+.vscode/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+backend/app/uploads/
+database/saved_conversations/
+database/saved_user_statuses/
+
