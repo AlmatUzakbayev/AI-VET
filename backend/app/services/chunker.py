@@ -1,5 +1,5 @@
 import nltk
-from backend.app.core.constants import CHUNK_SIZE, CHUNK_OVERLAP
+from backend.app.core.config import CHUNK_SIZE, CHUNK_OVERLAP
 
 def chunk_text(text: str, page_map: list) -> list[dict]:
     sentences = nltk.sent_tokenize(text)

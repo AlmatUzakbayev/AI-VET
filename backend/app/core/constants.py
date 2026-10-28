@@ -1,13 +1,5 @@
 from pathlib import Path
 
-RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
-TOP_K_RERANK = 3
-
-CHUNK_SIZE = 512
-CHUNK_OVERLAP = 64
-
-EMBEDDINGS_MODEL = "intfloat/multilingual-e5-large"
-
 # Политика загрузки файлов
 ALLOWED_EXTENSIONS = {'.pdf', '.docx', '.txt'}
 MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024

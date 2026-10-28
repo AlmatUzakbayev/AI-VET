@@ -5,24 +5,25 @@ from dotenv import load_dotenv
 env_path = Path(__file__).resolve().parents[3] / ".env"
 load_dotenv(env_path)
 
-TELEGRAM_BOT_TOKEN = os.environ['TELEGRAM_BOT_TOKEN']
+# Only the bot needs the token, so a missing value must not break the backend
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 
-BACKEND_URL = os.getenv("BACKEND_URL")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8080")
 
-OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")
 
-SUPABASE_URL = os.environ['SUPABASE_URL']
-SUPABASE_KEY = os.environ['SUPABASE_KEY']
+SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
 
-QDRANT_URL = os.environ['QDRANT_URL']
-QDRANT_API_KEY = os.environ['QDRANT_API_KEY']
+QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
+QDRANT_API_KEY = os.getenv("QDRANT_API_KEY") or None
 QDRANT_COLLECTION = os.getenv("QDRANT_COLLECTION", "documents")
 
-LANGSMITH_ENDPOINT = os.environ['LANGSMITH_ENDPOINT']
-LANGSMITH_API_KEY = os.environ['LANGSMITH_API_KEY']
-LANGSMITH_PROJECT = os.environ['LANGSMITH_PROJECT']
+LANGSMITH_ENDPOINT = os.getenv("LANGSMITH_ENDPOINT", "")
+LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY", "")
+LANGSMITH_PROJECT = os.getenv("LANGSMITH_PROJECT", "")
 
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "512"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "64"))

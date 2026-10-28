@@ -1,4 +1,4 @@
-from backend.app.core.constants import EMBEDDINGS_MODEL
+from backend.app.core.config import EMBEDDINGS_MODEL
 
 try:
     from sentence_transformers import SentenceTransformer

@@ -1,4 +1,4 @@
-from backend.app.core.constants import RERANKER_MODEL, TOP_K_RERANK
+from backend.app.core.config import RERANKER_MODEL, TOP_K_RERANK
 from sentence_transformers import CrossEncoder
 
 class RerankerService:
