@@ -14,11 +14,12 @@ SYMPTOM_KEYWORDS = [
 class VetNERService:
     def __init__(self):
         from natasha import (
-            Segmenter, NewsEmbedding,
+            Segmenter, MorphVocab, NewsEmbedding,
             NewsMorphTagger, NewsSyntaxParser,
             NewsNERTagger,
         )
         self.segmenter = Segmenter()
+        self.morph_vocab = MorphVocab()
         self.emb = NewsEmbedding()
         self.morph_tagger = NewsMorphTagger(self.emb)
         self.syntax_parser = NewsSyntaxParser(self.emb)
@@ -38,9 +39,14 @@ class VetNERService:
             if span.type in {"ORG", "PER", "LOC"}
         ]
 
-        text_lower = text.lower()
-        animals = [a for a in ANIMAL_KEYWORDS if a in text_lower]
-        symptoms = [s for s in SYMPTOM_KEYWORDS if s in text_lower]
+        # Keywords are in the nominative case, so "у коровы" is matched through the lemma "корова"
+        for token in doc.tokens:
+            token.lemmatize(self.morph_vocab)
+        lemmas = {_normalize(token.lemma) for token in doc.tokens}
+        text_lower = _normalize(text.lower())
+
+        animals = [a for a in ANIMAL_KEYWORDS if _normalize(a) in lemmas or _normalize(a) in text_lower]
+        symptoms = [s for s in SYMPTOM_KEYWORDS if _normalize(s) in lemmas or _normalize(s) in text_lower]
 
         duration = None
         duration_match = re.search(r"(\d+)\s*(день|дня|дней|час|часа|часов|неделю|недели)", text_lower)
@@ -53,3 +59,7 @@ class VetNERService:
             "duration": duration,
             "named_entities": named_entities,
         }
+
+
+def _normalize(word: str) -> str:
+    return word.lower().replace("ё", "е")
