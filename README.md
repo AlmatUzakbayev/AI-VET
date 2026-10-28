@@ -1,5 +1,7 @@
 # AI Veterinary Assistant
 
+[![tests](https://github.com/AlmatUzakbayev/AI-VET/actions/workflows/tests.yml/badge.svg)](https://github.com/AlmatUzakbayev/AI-VET/actions/workflows/tests.yml)
+
 Backend service and Telegram bot for veterinary consultation powered by RAG.
 
 You can find the bot at @MED_VET_BOT.
@@ -32,7 +34,7 @@ Aiogram Bot (bot/)
 FastAPI Backend (backend/)
       ↓
   ┌───┴──────────────┐
-Qdrant           Gemini/OpenAI
+Qdrant            Gemini       
 (vectors)        (generation)
       ↓
 Two-stage Retrieval:
@@ -52,21 +54,21 @@ Two-stage Retrieval:
 | Vector DB | Qdrant Cloud |
 | Embeddings | intfloat/multilingual-e5-large |
 | Reranker | cross-encoder/ms-marco-MiniLM-L-6-v2 |
-| LLM | Google Gemini / OpenAI GPT |
+| LLM | Google Gemini (via LangChain) |
 | History | JSON file storage |
 
 ## Installation
 
 ### Prerequisites
 - Python 3.12+
-- Docker and docker-compose (for containerized deployment)
+- A Qdrant instance (Qdrant Cloud or a local container)
 
 ### Setup
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd ai-vet-dev
+git clone https://github.com/AlmatUzakbayev/AI-VET.git
+cd AI-VET
 ```
 
 2. Install dependencies:
@@ -74,13 +76,16 @@ cd ai-vet-dev
 pip install -r requirements.txt
 ```
 
-3. Configure environment variables by creating a `.env` file:
+3. Configure environment variables by copying `.env.example` to `.env`.
+The backend needs only these; the rest of `.env.example` is optional:
 ```env
-TELEGRAM_BOT_TOKEN=your_telegram_token
 GOOGLE_API_KEY=your_google_key
-OPENAI_API_KEY=your_openai_key
 QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=your_qdrant_key
+```
+The bot additionally needs:
+```env
+TELEGRAM_BOT_TOKEN=your_telegram_token
 BACKEND_URL=http://localhost:8080
 ```
 
@@ -88,10 +93,9 @@ BACKEND_URL=http://localhost:8080
 
 ### Running Locally
 
-1. Start the backend API:
+1. Start the backend API from the project root:
 ```bash
-cd backend/app
-uvicorn app:app --reload --port 8080
+uvicorn backend.app.app:app --reload --port 8080
 ```
 
 2. In a separate terminal, start the Telegram bot:
@@ -100,11 +104,6 @@ python -m bot.tg_app
 ```
 
 3. Open the bot in Telegram, select your role and animal type, then start asking questions
-
-### Running with Docker
-```bash
-docker-compose up --build
-```
 
 ## API Reference
 
@@ -120,6 +119,36 @@ docker-compose up --build
 - **POST** `/api/v1/ai-vet/documents/upload` — Upload veterinary document
 - **GET** `/api/v1/ai-vet/documents/` — List documents
 - **DELETE** `/api/v1/ai-vet/documents/{id}` — Delete document
+
+## Testing
+
+The test suite covers the API, the RAG pipeline, document parsing, chunking and
+entity extraction. The embedding models, Qdrant and the LLM are replaced with
+fakes, so the tests need no API keys or network and run in a few seconds.
+
+```bash
+pip install -r requirements-test.txt
+python -m nltk.downloader punkt_tab
+pytest -v
+```
+
+| Area | What is checked |
+|------|-----------------|
+| API | Users, legacy bot endpoints, `/ask`, document upload and delete, validation errors (400 / 404 / 422) |
+| Security | An upload filename like `../../evil.txt` cannot escape the uploads directory |
+| RAG pipeline | Query enrichment with symptoms and animal, context from found documents, fallback to the built-in knowledge base |
+| Chunking | Chunk size limit, `char_start` and page numbers, zero overlap |
+| Parsing | TXT, DOCX and PDF (page map), language detection, unsupported formats |
+| NER | Animals in any case form ("у коровы" → корова), symptoms, duration |
+
+Tests run on every push via GitHub Actions.
+
+## Known Limitations
+
+- Every uploaded document is stored in Qdrant with `document_id = 1`, so search
+  covers all documents together and `DELETE /documents/1` removes all of them.
+- `GET /documents/` always returns an empty list.
+- Conversation history is kept in memory and written to JSON files only on shutdown.
 
 ## Development Notes
 

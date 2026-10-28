@@ -2,7 +2,7 @@
   "name": "veterinary-assistant",
   "version": "1.0.0",
   "description": "AI-ветеринарный ассистент с RAG pipeline",
-  "stack": ["Python", "FastAPI", "aiogram", "LangChain", "Qdrant", "PostgreSQL"],
+  "stack": ["Python", "FastAPI", "aiogram", "LangChain", "Qdrant"],
   "entrypoints": {
     "backend": "backend/app/app.py",
     "bot": "bot/tg_app.py"
