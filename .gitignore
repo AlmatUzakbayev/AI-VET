@@ -12,3 +12,4 @@ backend/app/uploads/
 database/saved_conversations/
 database/saved_user_statuses/
 
+.venv/
