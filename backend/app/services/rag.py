@@ -6,15 +6,21 @@ from backend.app.services.generator import AiVeterinarian
 
 
 class VetRAGService:
-    def __init__(self, embedder: EmbeddingService, reranker: RerankerService, vector_store: VectorStore):
+    def __init__(
+        self,
+        embedder: EmbeddingService,
+        reranker: RerankerService,
+        vector_store: VectorStore,
+        ner: VetNERService | None = None,
+        generator: AiVeterinarian | None = None,
+    ):
         self.embedder = embedder
         self.reranker = reranker
         self.vector_store = vector_store
-        self.generator = AiVeterinarian()
-        self.ner = VetNERService()
+        self.generator = generator or AiVeterinarian()
+        self.ner = ner or VetNERService()
 
     async def answer(self, query: str, user_config: dict, conversation_state: dict) -> dict:
-        ner = VetNERService()
         entities = self.ner.extract(query)
 
         enriched_query = query

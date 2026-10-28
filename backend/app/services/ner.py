@@ -1,9 +1,4 @@
 import re
-from natasha import (
-    Segmenter, MorphVocab, NewsEmbedding,
-    NewsMorphTagger, NewsSyntaxParser,
-    NewsNERTagger, Doc,
-)
 
 ANIMAL_KEYWORDS = [
     "корова", "коза", "овца", "свинья", "курица", "бык",
@@ -18,6 +13,11 @@ SYMPTOM_KEYWORDS = [
 
 class VetNERService:
     def __init__(self):
+        from natasha import (
+            Segmenter, NewsEmbedding,
+            NewsMorphTagger, NewsSyntaxParser,
+            NewsNERTagger,
+        )
         self.segmenter = Segmenter()
         self.emb = NewsEmbedding()
         self.morph_tagger = NewsMorphTagger(self.emb)
@@ -25,6 +25,7 @@ class VetNERService:
         self.ner_tagger = NewsNERTagger(self.emb)
 
     def extract(self, text: str) -> dict:
+        from natasha import Doc
         doc = Doc(text)
         doc.segment(self.segmenter)
         doc.tag_morph(self.morph_tagger)

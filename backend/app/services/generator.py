@@ -3,7 +3,6 @@ from typing import Dict
 from dotenv import load_dotenv
 from langchain_core.load import loads
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 import logging
 
 from backend.app.core.constants import TEXT_PROMPT
@@ -16,6 +15,7 @@ class AiVeterinarian:
         api_key = os.getenv("GOOGLE_API_KEY")
         if not api_key:
             raise ValueError("GOOGLE_API_KEY не найден в .env")
+        from langchain_google_genai import ChatGoogleGenerativeAI
         self.model = ChatGoogleGenerativeAI(model=model_name, temperature=0)
         self.messages = []
         self.summary = ""

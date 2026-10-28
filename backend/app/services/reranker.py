@@ -1,11 +1,13 @@
 from backend.app.core.config import RERANKER_MODEL, TOP_K_RERANK
-from sentence_transformers import CrossEncoder
 
 class RerankerService:
     def __init__(self):
+        from sentence_transformers import CrossEncoder
         self.model = CrossEncoder(RERANKER_MODEL)
 
     def rerank(self, query: str, candidates: list[dict]) -> list[dict]:
+        if not candidates:
+            return []
         pairs = [(query, c["text"]) for c in candidates]
         scores = self.model.predict(pairs)
         for i,candidate in enumerate(candidates):
